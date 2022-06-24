@@ -67,3 +67,17 @@ wasm-pack publish
   for logging panic messages to the developer console.
 * [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
   for small code size.
+
+## Troubleshooting
+You need to make sure you have rust and llvm installed locally.
+
+Make sure to have the proper paths exported in the environment you're building
+the Rust code from:
+
+```
+CC=/usr/local/opt/llvm/bin/clang
+AR=/usr/local/opt/llvm/bin/llvm-ar
+```
+
+See this [issue thread](https://github.com/rust-bitcoin/rust-secp256k1/pull/254#issuecomment-879588601)
+for more details

@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "lib": [
+      // Allow for newer syntax and other variables/tools
+      "es6",
+      // Object.entries and Object.values
+      "es2017.object",
+      // Window, etc
+      "dom",
+      // array.includes
+      "es2016.array.include",
+      // Promises, Async/Await
+      "es2018"
+    ],
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "jsx": "react"
+  },
+  "include": [
+    "src"
+  ]
+}
