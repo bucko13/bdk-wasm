@@ -1,18 +1,39 @@
+#![feature(once_cell)]
+#![feature(result_flattening)]
+
 use bdk::bitcoin::Network;
+use bdk::bitcoin::secp256k1::{Secp256k1};
+
+use wasm_bindgen::prelude::*;
+
+// use bdk::bitcoin::secp256k1::VerifyOnly;
+// use bdk::bitcoin::secp256k1::Secp256k1;
+// use std::lazy::SyncLazy;
+// static SECP: SyncLazy<Secp256k1<VerifyOnly>> = SyncLazy::new(|| Secp256k1::verification_only());
+
 use bdk::blockchain::EsploraBlockchain;
 use bdk::database::MemoryDatabase;
+use bdk::descriptor::policy::BuildSatisfaction;
+use bdk::keys::{KeyError, DescriptorSecretKey};
+use miniscript::{descriptor::DescriptorPublicKey, Descriptor};
 use bdk::wallet::AddressIndex;
 use bdk::{SyncOptions, Wallet};
+use std::collections::HashMap;
 use std::rc::Rc;
+use bdk::wallet::signer::{SignersContainer};
 
-use js_sys::Promise;
+use js_sys::{Promise, Error};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::future_to_promise;
+use std::sync::Arc;
+
+use bdk::descriptor::{IntoWalletDescriptor, ExtractPolicy, ExtendedDescriptor, KeyMap, DescriptorError};
 
 #[cfg(feature = "web-sys")]
 use web_sys::console;
 
 mod utils;
+use core::str::FromStr;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -107,4 +128,56 @@ impl WalletWrapper {
 #[wasm_bindgen]
 pub fn greet() {
     alert("Hello, bdk-wasm!");
+}
+
+
+#[wasm_bindgen]
+pub fn extractPolicy(s: &str) -> Result<String, JsValue>  {
+    // (1) Parse the descriptor from the string and find if there are any initial errors
+    let desc = match Descriptor::<DescriptorPublicKey>::from_str(s) {
+        Ok(desc) => desc,
+        Err(err) => {
+            let err = format!("Could not parse descriptor {} ", err.to_string());
+            return Err(Error::new(&err.to_string()).into())
+        }
+    };
+
+    // let secp = Secp256k1::new();
+    // let wallet = Wallet::new(s, None, Network::Bitcoin, MemoryDatabase::default());
+
+    // a closure we'll use to test the descriptor with various networks
+    // let get_wallet_descriptor = | network: Network |  {
+    //     let d = desc.clone();
+    //     d.into_wallet_descriptor(&secp, network)
+    // };
+
+    // println!("{:#?}", desc);
+    // (2) try and get the wallet_descriptor but we don't know the network yet
+    // let (wallet_desc, keymap) = get_wallet_descriptor(Network::Bitcoin).unwrap_or_else(|e| {
+    //         get_wallet_descriptor(Network::Testnet).unwrap_or_else(|e| {
+    //                 get_wallet_descriptor(Network::Regtest).unwrap_or_else(|e| {
+    //                         get_wallet_descriptor(Network::Signet).unwrap()
+    //                 })
+    //         })
+    // });
+
+    // let signers_container = Arc::new(SignersContainer::build(keymap, &wallet_desc, &secp));
+    // let policy = wallet_desc.extract_policy(&signers_container, BuildSatisfaction::None, &secp).unwrap().unwrap();
+
+    // match serde_json::to_string(&policy) {
+    //     Ok(json) => Ok(json),
+    //     Err(err) => return Err(Error::new("failed").into())
+    // }
+    // Ok(serde_json::to_string_pretty(&policy).map_err(|e| e.to_string())?)
+    Ok(String::from("hello world3"))
+}
+
+#[test]
+fn test_stuff() {
+    let testStr = "wsh(multi(2,tpubD6NzVbkrYhZ4XHndKkuB8FifXm8r5FQHwrN6oZuWCz13qb93rtgKvD4PQsqC4HP4yhV3tA2fqr2RbY5mNXfM7RxXUoeABoDtsFUq2zJq6YK/0/*,tpubD6NzVbkrYhZ4XHndKkuB8FifXm8r5FQHwrN6oZuWCz13qb93rtgKvD4PQsqC4HP4yhV3tA2fqr2RbY5mNXfM7RxXUoeABoDtsFUq2zJq6YK/1/*))";
+    let mainStr = "wsh(sortedmulti(1,[9d120b19/48'/0'/0'/2']xpub6FDrnnUsgQSwRFazYbVDs9eadQaNV13f5dtQDoWrCuMNq2qgMH7GevctMAm3PeHq3KBkh9BgA8iPfaHYACHFpfueYdeAUtjjEH3vMJWEKfu/0/*,[5c9e228d/48'/0'/0'/2']xpub6EgGHjcvovyN3nK921zAGPfuB41cJXkYRdt3tLGmiMyvbgHpss4X1eRZwShbEBb1znz2e2bCkCED87QZpin3sSYKbmCzQ9Sc7LaV98ngdeX/0/*))";
+    let s = testStr;
+    let pol = extractPolicy(s);
+    println!("{:?}", pol);
+    assert!(true)
 }

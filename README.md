@@ -81,3 +81,9 @@ AR=/usr/local/opt/llvm/bin/llvm-ar
 
 See this [issue thread](https://github.com/rust-bitcoin/rust-secp256k1/pull/254#issuecomment-879588601)
 for more details
+
+Might need the nightly rustup toolchain
+```
+$ rustup toolchain install nightly
+$ rustup default nightly
+```
