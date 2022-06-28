@@ -68,6 +68,22 @@ wasm-pack publish
 * [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
   for small code size.
 
+## Running the playground
+The browser playground is run and built out of the `playground` directory.
+Follow these steps to get it running:
+
+First build the wasm pkg:
+```shell
+$ wasm-pack build
+```
+
+Then get the webpack dev server running:
+```shell
+$ cd ./playground
+$ npm install
+$ npm start
+```
+
 ## Troubleshooting
 You need to make sure you have rust and llvm installed locally.
 
