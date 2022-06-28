@@ -1,6 +1,3 @@
-#![feature(once_cell)]
-#![feature(result_flattening)]
-
 use bdk::bitcoin::Network;
 use bdk::bitcoin::secp256k1::{Secp256k1};
 
@@ -14,20 +11,17 @@ use wasm_bindgen::prelude::*;
 use bdk::blockchain::EsploraBlockchain;
 use bdk::database::MemoryDatabase;
 use bdk::descriptor::policy::BuildSatisfaction;
-use bdk::keys::{KeyError, DescriptorSecretKey};
 use miniscript::{descriptor::DescriptorPublicKey, Descriptor};
 use bdk::wallet::AddressIndex;
 use bdk::{SyncOptions, Wallet};
-use std::collections::HashMap;
 use std::rc::Rc;
 use bdk::wallet::signer::{SignersContainer};
 
 use js_sys::{Promise, Error};
-use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::future_to_promise;
 use std::sync::Arc;
 
-use bdk::descriptor::{IntoWalletDescriptor, ExtractPolicy, ExtendedDescriptor, KeyMap, DescriptorError};
+use bdk::descriptor::{IntoWalletDescriptor, ExtractPolicy};
 
 #[cfg(feature = "web-sys")]
 use web_sys::console;
@@ -142,34 +136,28 @@ pub fn extractPolicy(s: &str) -> Result<String, JsValue>  {
         }
     };
 
-    // let secp = Secp256k1::new();
-    // let wallet = Wallet::new(s, None, Network::Bitcoin, MemoryDatabase::default());
+    let secp = Secp256k1::new();
+    let wallet = Wallet::new(s, None, Network::Bitcoin, MemoryDatabase::default());
 
     // a closure we'll use to test the descriptor with various networks
-    // let get_wallet_descriptor = | network: Network |  {
-    //     let d = desc.clone();
-    //     d.into_wallet_descriptor(&secp, network)
-    // };
+    let get_wallet_descriptor = | network: Network |  {
+        let d = desc.clone();
+        d.into_wallet_descriptor(&secp, network)
+    };
 
-    // println!("{:#?}", desc);
     // (2) try and get the wallet_descriptor but we don't know the network yet
-    // let (wallet_desc, keymap) = get_wallet_descriptor(Network::Bitcoin).unwrap_or_else(|e| {
-    //         get_wallet_descriptor(Network::Testnet).unwrap_or_else(|e| {
-    //                 get_wallet_descriptor(Network::Regtest).unwrap_or_else(|e| {
-    //                         get_wallet_descriptor(Network::Signet).unwrap()
-    //                 })
-    //         })
-    // });
+    let (wallet_desc, keymap) = get_wallet_descriptor(Network::Bitcoin).unwrap_or_else(|e| {
+            get_wallet_descriptor(Network::Testnet).unwrap_or_else(|e| {
+                    get_wallet_descriptor(Network::Regtest).unwrap_or_else(|e| {
+                            get_wallet_descriptor(Network::Signet).unwrap()
+                    })
+            })
+    });
 
-    // let signers_container = Arc::new(SignersContainer::build(keymap, &wallet_desc, &secp));
-    // let policy = wallet_desc.extract_policy(&signers_container, BuildSatisfaction::None, &secp).unwrap().unwrap();
+    let signers_container = Arc::new(SignersContainer::build(keymap, &wallet_desc, &secp));
+    let policy = wallet_desc.extract_policy(&signers_container, BuildSatisfaction::None, &secp).unwrap().unwrap();
 
-    // match serde_json::to_string(&policy) {
-    //     Ok(json) => Ok(json),
-    //     Err(err) => return Err(Error::new("failed").into())
-    // }
-    // Ok(serde_json::to_string_pretty(&policy).map_err(|e| e.to_string())?)
-    Ok(String::from("hello world3"))
+    Ok(serde_json::to_string_pretty(&policy).map_err(|e| e.to_string())?)
 }
 
 #[test]
