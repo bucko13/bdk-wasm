@@ -1,0 +1,10 @@
+{
+  "arrowParens": "avoid", # always|avoid - default always
+  "printWidth": 100,
+  "trailingComma": "es5", # es5|none|all defaults to es5
+  "tabWidth": 2, # default is 2
+  "semi": true, # defaults to true
+  "bracketSpacing": true, # defaults to true
+
+  # There are a few other options - run 'npx prettier --help' to see them.
+}

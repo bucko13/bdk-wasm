@@ -1,27 +1,24 @@
 {
   "compilerOptions": {
+    "target": "es5",
     "lib": [
-      // Allow for newer syntax and other variables/tools
-      "es6",
-      // Object.entries and Object.values
-      "es2017.object",
-      // Window, etc
       "dom",
-      // array.includes
-      "es2016.array.include",
-      // Promises, Async/Await
-      "es2018"
+      "dom.iterable",
+      "esnext"
     ],
     "allowJs": true,
-    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "isolatedModules": false,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   },
   "include": [
     "src"

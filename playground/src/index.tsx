@@ -1,19 +1,5 @@
-import React, {useEffect} from "react";
-import ReactDOM from "react-dom";
-import { greet } from 'bdk-wasm'
-
-const App = () => {
-  useEffect(() => {
-    greet()
-  }, [])
-  return (
-    <h1>My React and TypeScript App!</h1>
-  )
-};
-
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+// A dependency graph that contains any wasm must all be imported
+// asynchronously. This `bootstrap.js` file does the single async import, so
+// that no one else needs to worry about it again.
+import("./entry")
+  .catch(e => console.error("Error importing `index.ts`:", e));
